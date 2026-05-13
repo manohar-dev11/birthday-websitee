@@ -420,20 +420,18 @@ document.getElementById("popup-img");
 const closeImage =
 document.getElementById("close-image");
 
-/* CREATE VIDEO ELEMENT */
+const popupVideo =
+document.getElementById("popup-video");
 
-let popupVideo =
-document.createElement("video");
+if(popupVideo){
 
-popupVideo.controls = true;
+    popupVideo.controls = true;
 
-popupVideo.autoplay = true;
+    popupVideo.setAttribute("playsinline", "");
 
-popupVideo.style.maxWidth = "85%";
+    popupVideo.setAttribute("webkit-playsinline", "");
 
-popupVideo.style.maxHeight = "85vh";
-
-popupVideo.style.borderRadius = "25px";
+}
 
 /* OPEN */
 
@@ -449,7 +447,13 @@ mediaItems.forEach(item => {
 
             popupImg.style.display = "block";
 
-            popupVideo.style.display = "none";
+            if(popupVideo){
+
+                popupVideo.style.display = "none";
+
+                popupVideo.pause();
+
+            }
 
             popupImg.src = item.src;
 
@@ -457,16 +461,19 @@ mediaItems.forEach(item => {
 
         /* VIDEO */
 
-        else if(item.tagName === "VIDEO"){
+        else if(item.tagName === "VIDEO" && popupVideo){
 
             popupImg.style.display = "none";
 
             popupVideo.style.display = "block";
 
-            popupVideo.src =
-            item.querySelector("source").src;
+            const srcEl =
+            item.querySelector("source");
 
-            popup.appendChild(popupVideo);
+            popupVideo.src =
+            srcEl ? srcEl.src : "";
+
+            popupVideo.play().catch(() => {});
 
         }
 
@@ -482,7 +489,11 @@ if(closeImage){
 
         popup.classList.remove("active");
 
-        popupVideo.pause();
+        if(popupVideo){
+
+            popupVideo.pause();
+
+        }
 
     });
 
